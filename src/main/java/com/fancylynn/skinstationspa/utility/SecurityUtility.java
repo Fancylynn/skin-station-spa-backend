@@ -1,7 +1,11 @@
 package com.fancylynn.skinstationspa.utility;
 
+import com.fancylynn.skinstationspa.dao.UserDao;
+import com.fancylynn.skinstationspa.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -13,12 +17,17 @@ import java.util.Random;
 
 @Component
 public class SecurityUtility {
+
     private static final String  SALT = "salt"; //Salt should be protected carefully.
 
+
+    // strength will influence the running time of the password crypt
     @Bean
     public static BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(6, new SecureRandom(SALT.getBytes()));
+        return encoder;
     }
+
 
     @Bean
     public static String randomPassword() {
