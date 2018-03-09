@@ -6,6 +6,7 @@ package com.fancylynn.skinstationspa.model;
 import com.fancylynn.skinstationspa.model.security.Authority;
 import com.fancylynn.skinstationspa.model.security.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -54,10 +55,12 @@ public class User implements UserDetails{
         this.username = username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

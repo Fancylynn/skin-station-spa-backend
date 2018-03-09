@@ -67,7 +67,6 @@ public class UserController {
 
         userService.createNewUser(n);
 
-        n.setPassword("");
         return new ResponseEntity<Object>(n, HttpStatus.CREATED);
 
     }
