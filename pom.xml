@@ -85,7 +85,7 @@
     </dependencies>
 
     <build>
-        <finalName>skinstationspa-app</finalName>
+        <finalName>skinstationspa</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
