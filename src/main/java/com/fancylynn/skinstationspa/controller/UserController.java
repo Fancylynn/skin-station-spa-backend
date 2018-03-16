@@ -45,8 +45,8 @@ public class UserController {
             @RequestParam String username,
             @RequestParam String email,
             @RequestParam String password,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
+            String firstName,
+            String lastName,
             String phone
             ) throws EntityExistsException {
         // @ResponseBody means the returned String is the response, not a view name
