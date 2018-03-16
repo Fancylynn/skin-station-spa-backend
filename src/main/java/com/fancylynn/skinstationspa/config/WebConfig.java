@@ -25,7 +25,10 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000", "http://www.skinstationspa.fancylynn.com");
+                        .allowedOrigins("http://localhost:3000",
+                                    "http://www.skinstationspa.fancylynn.com",
+                                    "http://api.fancylynn.com",
+                                    "http://localhost:8082");
             }
         };
     }

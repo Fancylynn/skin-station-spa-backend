@@ -3,6 +3,7 @@ package com.fancylynn.skinstationspa.controller;
 /**
  * Created by Lynn on 2018/1/24.
  */
+import com.fancylynn.skinstationspa.dto.NewUserRequestDTO;
 import com.fancylynn.skinstationspa.model.User;
 import com.fancylynn.skinstationspa.service.UserService;
 import com.fancylynn.skinstationspa.utility.SecurityUtility;
@@ -41,29 +42,24 @@ public class UserController {
 
 //    new user creation
     @RequestMapping(method = RequestMethod.POST, path = "/signup")
-    public @ResponseBody ResponseEntity<Object> createNewUser (
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password,
-            String firstName,
-            String lastName,
-            String phone
+    public ResponseEntity<Object> createNewUser (
+            @RequestBody NewUserRequestDTO newUserRequestDTO
             ) throws EntityExistsException {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
         // new user creation
         User n = new User();
-        n.setUsername(username);
-        n.setEmail(email);
+        n.setUsername(newUserRequestDTO.getUsername());
+        n.setEmail(newUserRequestDTO.getEmail());
 
         // password should be encrypted before insert into the database
-        String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);
+        String encryptedPassword = SecurityUtility.passwordEncoder().encode(newUserRequestDTO.getPassword());
         n.setPassword(encryptedPassword);
 
-        n.setFirstName(firstName);
-        n.setLastName(lastName);
-        n.setPhone(phone);
+//        n.setFirstName(firstName);
+//        n.setLastName(lastName);
+//        n.setPhone(phone);
 
         userService.createNewUser(n);
 
