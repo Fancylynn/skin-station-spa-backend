@@ -3,20 +3,10 @@ package com.fancylynn.skinstationspa;
 /**
  * Created by Lynn on 2018/1/24.
  */
-import com.fancylynn.skinstationspa.model.User;
-import com.fancylynn.skinstationspa.model.security.Role;
-import com.fancylynn.skinstationspa.model.security.UserRole;
-import com.fancylynn.skinstationspa.service.UserService;
-import com.fancylynn.skinstationspa.utility.SecurityUtility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer  {
@@ -45,7 +35,7 @@ public class Application extends SpringBootServletInitializer  {
 //
 //    @Override
 //    public void run(String... args) throws Exception {
-//        User user1 = new User();
+//        UserInfo user1 = new UserInfo();
 //        user1.setFirstName("John");
 //        user1.setLastName("Adams");
 //        user1.setUsername("j");

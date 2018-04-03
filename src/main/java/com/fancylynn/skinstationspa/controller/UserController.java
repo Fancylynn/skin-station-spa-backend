@@ -3,19 +3,26 @@ package com.fancylynn.skinstationspa.controller;
 /**
  * Created by Lynn on 2018/1/24.
  */
+import com.fancylynn.skinstationspa.dto.JwtAuthenticationResponse;
 import com.fancylynn.skinstationspa.dto.NewUserRequestDTO;
-import com.fancylynn.skinstationspa.model.User;
+import com.fancylynn.skinstationspa.exception.AuthenticationException;
+import com.fancylynn.skinstationspa.model.UserInfo;
 import com.fancylynn.skinstationspa.service.UserService;
+import com.fancylynn.skinstationspa.utility.JwtTokenUtil;
 import com.fancylynn.skinstationspa.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
-import javax.validation.ConstraintViolationException;
+import java.util.Objects;
 
 
 @RestController // This means that this class is a Controller
@@ -25,18 +32,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
 //    user log in
     @RequestMapping(
             method = RequestMethod.GET,
             path = "/login"
     )
     public @ResponseBody ResponseEntity<Object> userLogIn(
-            @RequestParam String email,
+            @RequestParam String username,
             @RequestParam String password) throws BadCredentialsException {
-        if (!userService.loginVerification(email, password)) {
-            throw new BadCredentialsException("Incompatible email or password!");
-        }
-        return new ResponseEntity<Object>(userService.findByEmail(email), HttpStatus.OK);
+
+        authenticate(username, password);
+        // Reload password post-security so we can generate the token
+        final UserDetails userDetails = userService.findByUsername(username);
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        // Return the token
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+
+//        if (!userService.loginVerification(username, password)) {
+//            throw new BadCredentialsException("Incompatible email or password!");
+//        }
+//        return new ResponseEntity<Object>(userService.findByUsername(username), HttpStatus.OK);
 //        return userService.findByEmail(email);
     }
 
@@ -49,7 +71,7 @@ public class UserController {
         // @RequestParam means it is a parameter from the GET or POST request
 
         // new user creation
-        User n = new User();
+        UserInfo n = new UserInfo();
         n.setUsername(newUserRequestDTO.getUsername());
         n.setEmail(newUserRequestDTO.getEmail());
 
@@ -67,6 +89,35 @@ public class UserController {
 
     }
 
+//    get user information
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/userprofile"
+    )
+    public @ResponseBody String getUserProfile(
+            @RequestHeader(value="authorization") String authorizationToken
+        ) throws BadCredentialsException {
+        System.out.println(authorizationToken);
+
+        String username = null;
+        String authToken = null;
+        authToken = authorizationToken.substring(7);
+        username = jwtTokenUtil.getUsernameFromToken(authToken);
+        return username;
+    }
+
+    private void authenticate(String username, String password) {
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(password);
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new AuthenticationException("User is disabled!", e);
+        } catch (BadCredentialsException e) {
+            throw new AuthenticationException("Bad credentials!", e);
+        }
+    }
 
 
 

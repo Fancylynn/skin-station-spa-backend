@@ -1,7 +1,7 @@
 package com.fancylynn.skinstationspa.service;
 
 import com.fancylynn.skinstationspa.dao.UserDao;
-import com.fancylynn.skinstationspa.model.User;
+import com.fancylynn.skinstationspa.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +20,7 @@ public class UserSecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+        UserInfo user = userDao.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("username not found");

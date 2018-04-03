@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class User implements UserDetails{
+public class UserInfo implements UserDetails{
 
     //user id - PK
     @Id

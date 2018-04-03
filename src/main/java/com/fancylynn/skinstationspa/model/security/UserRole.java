@@ -1,6 +1,6 @@
 package com.fancylynn.skinstationspa.model.security;
 
-import com.fancylynn.skinstationspa.model.User;
+import com.fancylynn.skinstationspa.model.UserInfo;
 
 import javax.persistence.*;
 
@@ -18,7 +18,7 @@ public class UserRole {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
-    private User user;
+    private UserInfo user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id")
@@ -26,7 +26,7 @@ public class UserRole {
 
     private UserRole() {}
 
-    public UserRole(User user, Role role) {
+    public UserRole(UserInfo user, Role role) {
         this.user = user;
         this.role = role;
     }
@@ -39,11 +39,11 @@ public class UserRole {
         this.userRoleId = userRoleId;
     }
 
-    public User getUser() {
+    public UserInfo getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserInfo user) {
         this.user = user;
     }
 

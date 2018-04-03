@@ -1,14 +1,13 @@
 package com.fancylynn.skinstationspa.service;
 
 import com.fancylynn.skinstationspa.dao.UserDao;
-import com.fancylynn.skinstationspa.model.User;
+import com.fancylynn.skinstationspa.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.EntityExistsException;
 
@@ -27,16 +26,18 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public User findByUsername(String username) {
+    public UserInfo findByUsername(String username) {
+
         return userDao.findByUsername(username);
     }
 
-    public User findByEmail(String email){
+    public UserInfo findByEmail(String email){
+
         return userDao.findByEmail(email);
     }
 
-    public User createNewUser(User newUser) throws EntityExistsException{
-        User localUserEmail = userDao.findByEmail(newUser.getEmail());
+    public UserInfo createNewUser(UserInfo newUser) throws EntityExistsException{
+        UserInfo localUserEmail = userDao.findByEmail(newUser.getEmail());
 
         if (localUserEmail != null) {
             LOG.info("user with this email {} already exists.", newUser.getEmail());
@@ -46,11 +47,11 @@ public class UserService {
         return userDao.save(newUser);
     }
 
-    public boolean loginVerification(String email, String password) throws EntityExistsException{
-        User localUser = userDao.findByEmail(email);
+    public boolean loginVerification(String username, String password) throws EntityExistsException{
+        UserInfo localUser = userDao.findByUsername(username);
 
         if (localUser == null) {
-            throw new EntityExistsException("User does not exist!");
+            throw new EntityExistsException("UserInfo does not exist!");
         }
 
         //get the encoded password in the database
