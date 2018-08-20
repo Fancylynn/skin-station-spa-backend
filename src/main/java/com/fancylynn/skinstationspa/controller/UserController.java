@@ -10,6 +10,7 @@ import com.fancylynn.skinstationspa.model.UserInfo;
 import com.fancylynn.skinstationspa.service.UserService;
 import com.fancylynn.skinstationspa.utility.JwtTokenUtil;
 import com.fancylynn.skinstationspa.utility.SecurityUtility;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.EntityExistsException;
 import java.util.Objects;
@@ -79,10 +81,6 @@ public class UserController {
         String encryptedPassword = SecurityUtility.passwordEncoder().encode(newUserRequestDTO.getPassword());
         n.setPassword(encryptedPassword);
 
-//        n.setFirstName(firstName);
-//        n.setLastName(lastName);
-//        n.setPhone(phone);
-
         userService.createNewUser(n);
 
         return new ResponseEntity<Object>(n, HttpStatus.CREATED);
@@ -94,7 +92,9 @@ public class UserController {
             method = RequestMethod.GET,
             path = "/userprofile"
     )
-    public @ResponseBody String getUserProfile(
+    public @ResponseBody ResponseEntity<Object> getUserProfile(
+//            @ApiIgnore
+//            @ApiParam(value = "x-foo-g2-ft", required = false, hidden = true, defaultValue = "should be hidden")
             @RequestHeader(value="authorization") String authorizationToken
         ) throws BadCredentialsException {
         System.out.println(authorizationToken);
@@ -103,7 +103,8 @@ public class UserController {
         String authToken = null;
         authToken = authorizationToken.substring(7);
         username = jwtTokenUtil.getUsernameFromToken(authToken);
-        return username;
+//        return username;
+        return new ResponseEntity<Object>(userService.findByUsername(username), HttpStatus.OK);
     }
 
     private void authenticate(String username, String password) {
@@ -115,6 +116,7 @@ public class UserController {
         } catch (DisabledException e) {
             throw new AuthenticationException("User is disabled!", e);
         } catch (BadCredentialsException e) {
+            e.printStackTrace();
             throw new AuthenticationException("Bad credentials!", e);
         }
     }

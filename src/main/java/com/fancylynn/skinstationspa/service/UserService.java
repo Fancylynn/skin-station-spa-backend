@@ -38,10 +38,16 @@ public class UserService {
 
     public UserInfo createNewUser(UserInfo newUser) throws EntityExistsException{
         UserInfo localUserEmail = userDao.findByEmail(newUser.getEmail());
+        UserInfo localUsername = userDao.findByUsername(newUser.getUsername());
 
         if (localUserEmail != null) {
             LOG.info("user with this email {} already exists.", newUser.getEmail());
             throw new EntityExistsException("user with this email already exists");
+        }
+
+        if (localUsername != null) {
+            LOG.info("user with this username {} already exists.", newUser.getUsername());
+            throw new EntityExistsException("user with this username already exists");
         }
 
         return userDao.save(newUser);
